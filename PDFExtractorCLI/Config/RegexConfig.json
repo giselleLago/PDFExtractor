@@ -27,7 +27,7 @@
     {
       "id": "altn2",
       "name": "Alternate Airdrome 2",
-      "required": true,
+      "required": false,
       "regexList": [ "(?s)Flight\\s+Info(?<output>\\s+.*?)(?=Fuel)", "ALTN2:\\s{0,10}(?<output>\\b[A-Z]{4}\\b)" ]
     },
     {

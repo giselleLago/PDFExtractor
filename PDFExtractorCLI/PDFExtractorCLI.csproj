@@ -18,4 +18,13 @@
     <ProjectReference Include="..\PDFExtractor\PDFExtractor.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Config\AIConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Config\RegexConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

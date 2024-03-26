@@ -9,22 +9,14 @@ namespace PDFExtractors.Extractor
         {
             var relevantPages = new List<string>();
 
-            try
+            using var reader = new PdfReader(filePath);
+            for (int pageNumber = 1; pageNumber <= reader.NumberOfPages; pageNumber++)
             {
-                using var reader = new PdfReader(filePath);
-                for (int pageNumber = 1; pageNumber <= reader.NumberOfPages; pageNumber++)
+                string pageContent = PdfTextExtractor.GetTextFromPage(reader, pageNumber);
+                if (IsPageRelevant(reader, pageContent))
                 {
-                    string pageContent = PdfTextExtractor.GetTextFromPage(reader, pageNumber);
-                    if (IsPageRelevant(reader, pageContent))
-                    {
-                        relevantPages.Add(pageContent);
-                    }
+                    relevantPages.Add(pageContent);
                 }
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Error when extracting data from PDF");
-                throw;
             }
 
             return relevantPages;

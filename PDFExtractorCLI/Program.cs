@@ -28,12 +28,11 @@ namespace PDFExtractorCLI
             {
                 try
                 {
-                    var reader = new PDFReader();
-                    var regexExtractor = new RegexDataExtractorEngine();
+                    var serviceScope = host.Services.CreateScope();
+                    var services = serviceScope.ServiceProvider;
 
-                    var extractor = new Extractor(reader, regexExtractor);
-                    var a = ReadRegexConfig();
-                    var extractedData = extractor.ExtractData(pathArg.Value, a);
+                    var extractor = services.GetRequiredService<Extractor>();
+                    var extractedData = extractor.ExtractData(pathArg.Value, ReadRegexConfig());
 
                     var flightNumber = 1;
                     foreach (var data in extractedData)
@@ -54,7 +53,6 @@ namespace PDFExtractorCLI
 
             });
 
-
             return app.Execute(args);
         }
 
@@ -62,6 +60,7 @@ namespace PDFExtractorCLI
         {
             services.AddTransient<IPDFReader, PDFReader>();
             services.AddTransient<IDataExtractorEngine, RegexDataExtractorEngine>();
+            services.AddTransient<Extractor>();
         }
 
         private static RegexConfig? ReadRegexConfig()
@@ -70,6 +69,6 @@ namespace PDFExtractorCLI
             return JsonConvert.DeserializeObject<RegexConfig>(json);
         }
 
-        private const string ConfigPath = "C:\\Users\\gisel\\source\\repos\\PDFExtractor\\PDFExtractorCLI\\Config\\RegexConfig.json";
+        private const string ConfigPath = ".\\Config\\RegexConfig.json";
     }
 }
