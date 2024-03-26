@@ -43,6 +43,9 @@ To extract data from a PDF file, use the following command:
 ```bash
 dotnet PDFExtractor.dll --path <PDFFilePath>
 ```
+```
+Note: Make sure to replace <PDFFilePath> with appropriate file path.
+```
 
 ### AI Integration (Upcoming)
 AI integration for enhanced data extraction capabilities will be added soon. Stay tuned for updates!
