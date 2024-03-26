@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PDFExtractorCLI": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\\\Users\\\\gisel\\\\source\\\\repos\\\\Capzlog.aero\\\\Task 1 - Extract Data from a PDF File - Sample File.pdf\""
+    }
+  }
+}
