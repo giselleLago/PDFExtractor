@@ -41,7 +41,7 @@ This is a command-line interface (CLI) application built with C# .NET 8 for read
 To extract data from a PDF file, use the following command:
 
 ```bash
-dotnet PDFExtractor.dll --path <PDFFilePath>
+PDFExtractor.exe <PDFFilePath>
 ```
 ```
 Note: Make sure to replace <PDFFilePath> with appropriate file path.
