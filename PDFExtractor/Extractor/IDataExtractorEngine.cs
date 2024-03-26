@@ -3,6 +3,6 @@ namespace PDFExtractors.Extractor
 {
     public interface IDataExtractorEngine
     {
-        Dictionary<string, ExtractedField> ExtractDataFromPage(string text, RegexConfig regexConfig);
+        ExtractedPage ExtractDataFromPage(string pageContent);
     }
 }

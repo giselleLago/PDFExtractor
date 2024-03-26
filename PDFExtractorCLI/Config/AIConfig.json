@@ -1,0 +1,3 @@
+{
+  "prompt": "This is a flight log, I need to extract all relavant information from it. Return a JSON object..."
+}

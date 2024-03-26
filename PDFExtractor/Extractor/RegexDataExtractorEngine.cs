@@ -5,49 +5,54 @@ namespace PDFExtractors.Extractor
 {
     public class RegexDataExtractorEngine : IDataExtractorEngine
     {
-        public Dictionary<string, ExtractedField> ExtractDataFromPage(string text, RegexConfig regexConfig)
+        public RegexDataExtractorEngine(RegexConfig regexConfig)
         {
-            var extractedFieldDict = new Dictionary<string, ExtractedField>();
-            foreach (var item in regexConfig.Fields)
-            {
-                var value = ExecuteRegex(text, item.RegexList, extractedFieldDict);
-                if (value == null && item.Required)
-                {
-                    throw new MissingRequiredFieldException($"Unable to extract required field: {item.Id}");
-                }
-                var extractedField = new ExtractedField { Id = item.Id, Name = item.Name, Value = value };
-                extractedFieldDict.TryAdd(item.Id, extractedField);
-            }
-
-            return extractedFieldDict;
+            RegexConfig = regexConfig;
         }
 
-        private static string? ExecuteRegex(string? text, IList<string> regexList, Dictionary<string, ExtractedField> extractedFieldDictionary)
+        public ExtractedPage ExtractDataFromPage(string pageContent)
         {
-            foreach (var regex in regexList)
+            var extractedPage = new ExtractedPage();
+            RegexConfig.Fields.ForEach(field => ExtractField(pageContent, extractedPage, field));
+            return extractedPage;
+        }
+
+        private static void ExtractField(string pageContent, ExtractedPage extractedPage, RegexExtractableField field)
+        {
+            var value = ExecuteRegexChain(pageContent, field.RegexChain, extractedPage);
+            if (value == null && field.Required)
+            {
+                throw new MissingRequiredFieldException($"Unable to extract required field: {field.Id}");
+            }
+            extractedPage.SetField(field.Id, field.Name, value);
+        }
+
+        private static string? ExecuteRegexChain(string? text, IList<string> regexChain, ExtractedPage extractedPage)
+        {
+            foreach (var regex in regexChain)
             {
                 if (text == null)
                     return null;
 
-                var resolvedRegex = ResolveRegexVariables(regex, extractedFieldDictionary);
+                var resolvedRegex = ReplaceVariables(regex, extractedPage);
                 var match = Regex.Match(text, $"{resolvedRegex}", RegexOptions.IgnoreCase);
 
                 text = match.Success ? match.Groups["output"].Value : null;
             }
-
             return text;
         }
 
-        private static string ResolveRegexVariables(string regex, Dictionary<string, ExtractedField> extractedFieldDictionary)
+        private static string ReplaceVariables(string regex, ExtractedPage extractedPage)
         {
-            string result = regex;
+            var result = regex;
 
-            foreach (var currentField in extractedFieldDictionary)
+            foreach (var currentField in extractedPage)
             {
-                result = result.Replace("{{" + currentField.Value.Id + "}}", currentField.Value.Value);
+                result = result.Replace("{{" + currentField.Id + "}}", currentField.Value);
             }
-
             return result;
         }
+
+        private readonly RegexConfig RegexConfig;
     }
 }

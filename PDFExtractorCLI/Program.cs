@@ -21,36 +21,29 @@ namespace PDFExtractorCLI
             var app = new CommandLineApplication();
             app.HelpOption();
 
-            var pathArg = app.Argument("path", "Path to PDF file");
-
+            var pathArg = app.Argument("path", "Path to PDF file").IsRequired();
 
             app.OnExecute(() =>
             {
                 try
                 {
-                    var serviceScope = host.Services.CreateScope();
-                    var services = serviceScope.ServiceProvider;
-
+                    var services = host.Services.CreateScope().ServiceProvider;
                     var extractor = services.GetRequiredService<Extractor>();
-                    var extractedData = extractor.ExtractData(pathArg.Value, ReadRegexConfig());
+                    var pages = extractor.ExtractData(pathArg.Value);
 
-                    var flightNumber = 1;
-                    foreach (var data in extractedData)
+                    for (var i = 0; i < pages.Count; i++)
                     {
-                        Console.WriteLine($"\nPrinting flight {flightNumber} info: ");
-                        foreach (var extractedField in data)
+                        Console.WriteLine($"\nPrinting page {i + 1} info: ");
+                        foreach (var field in pages[i])
                         {
-                            Console.WriteLine($"{extractedField.Value.Name} : {extractedField.Value.Value}");
+                            Console.WriteLine($"{field.Name}: {field.Value}");
                         }
-
-                        flightNumber++;
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Something went wrong: " + ex.Message);
                 }
-
             });
 
             return app.Execute(args);
@@ -58,15 +51,22 @@ namespace PDFExtractorCLI
 
         private static void ConfigureServices(IServiceCollection services)
         {
+            var regexConfig = ReadRegexConfig();
+            services.AddSingleton(regexConfig);
             services.AddTransient<IPDFReader, PDFReader>();
             services.AddTransient<IDataExtractorEngine, RegexDataExtractorEngine>();
             services.AddTransient<Extractor>();
         }
 
-        private static RegexConfig? ReadRegexConfig()
+        private static RegexConfig ReadRegexConfig()
         {
             string json = File.ReadAllText(ConfigPath);
-            return JsonConvert.DeserializeObject<RegexConfig>(json);
+            var config = JsonConvert.DeserializeObject<RegexConfig>(json);
+            if (config == null)
+            {
+                throw new Exception("Unable to read regex config file.");
+            }
+            return config;
         }
 
         private const string ConfigPath = ".\\Config\\RegexConfig.json";

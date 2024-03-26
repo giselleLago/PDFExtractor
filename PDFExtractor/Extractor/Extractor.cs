@@ -2,23 +2,21 @@
 
 namespace PDFExtractors.Extractor
 {
-    public class Extractor(IPDFReader reader, IDataExtractorEngine dataExtractorEngine)
+    public class Extractor
     {
-        public List<Dictionary<string, ExtractedField>> ExtractData(string filePath, RegexConfig regexConfig)
+        public Extractor(IPDFReader reader, IDataExtractorEngine dataExtractorEngine)
         {
-            var extractedDataList = new List<Dictionary<string, ExtractedField>>();
-
-            var relevantPages = Reader.GetRelevantPages(filePath);
-            foreach (var text in relevantPages)
-            {
-                var data = DataExtractorEngine.ExtractDataFromPage(text, regexConfig);
-                extractedDataList.Add(data);
-            }
-
-            return extractedDataList;
+            Reader = reader;
+            DataExtractorEngine = dataExtractorEngine;
         }
 
-        private readonly IPDFReader Reader = reader;
-        private readonly IDataExtractorEngine DataExtractorEngine = dataExtractorEngine;
+        public List<ExtractedPage> ExtractData(string filePath)
+        {
+            var relevantPagesContent = Reader.GetRelevantPages(filePath);
+            return relevantPagesContent.Select(DataExtractorEngine.ExtractDataFromPage).ToList();
+        }
+
+        private readonly IPDFReader Reader;
+        private readonly IDataExtractorEngine DataExtractorEngine;
     }
 }

@@ -6,7 +6,7 @@
 
         public required string Name { get; set; }
 
-        public required List<string> RegexList { get; set; }
+        public required List<string> RegexChain { get; set; }
 
         public bool Required { get; set; }
     }

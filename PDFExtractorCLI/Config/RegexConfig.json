@@ -4,37 +4,55 @@
       "id": "date",
       "name": "Date",
       "required": true,
-      "regexList": [ "(?s)Flight\\s+Info(?<output>\\s+.*?)(?=Fuel)", "Date:\\s*(?<output>(\\S+))" ]
+      "regexChain": [
+        "(?s)Flight\\s+Info(?<output>\\s+.*?)(?=Fuel)",
+        "Date:\\s*(?<output>(\\S+))"
+      ]
     },
     {
       "id": "flightFrom",
       "name": "Flight From",
       "required": true,
-      "regexList": [ "(?s)Flight\\s+Info(?<output>\\s+.*?)(?=Fuel)", "From:\\s*(?<output>[A-Z0-9]+)" ]
+      "regexChain": [
+        "(?s)Flight\\s+Info(?<output>\\s+.*?)(?=Fuel)",
+        "From:\\s*(?<output>[A-Z0-9]+)"
+      ]
     },
     {
       "id": "flightTo",
       "name": "Flight To",
       "required": true,
-      "regexList": [ "(?s)Flight\\s+Info(?<output>\\s+.*?)(?=Fuel)", "To:\\s*(?<output>([A-Z0-9]+))" ]
+      "regexChain": [
+        "(?s)Flight\\s+Info(?<output>\\s+.*?)(?=Fuel)",
+        "To:\\s*(?<output>([A-Z0-9]+))"
+      ]
     },
     {
       "id": "altn1",
       "name": "Alternate Airdrome 1",
       "required": true,
-      "regexList": [ "(?s)Flight\\s+Info(?<output>\\s+.*?)(?=Fuel)", "ALTN1:\\s*(?<output>([A-Z0-9]+))" ]
+      "regexChain": [
+        "(?s)Flight\\s+Info(?<output>\\s+.*?)(?=Fuel)",
+        "ALTN1:\\s*(?<output>([A-Z0-9]+))"
+      ]
     },
     {
       "id": "altn2",
       "name": "Alternate Airdrome 2",
       "required": false,
-      "regexList": [ "(?s)Flight\\s+Info(?<output>\\s+.*?)(?=Fuel)", "ALTN2:\\s{0,10}(?<output>\\b[A-Z]{4}\\b)" ]
+      "regexChain": [
+        "(?s)Flight\\s+Info(?<output>\\s+.*?)(?=Fuel)",
+        "ALTN2:\\s{0,10}(?<output>\\b[A-Z]{4}\\b)"
+      ]
     },
     {
       "id": "timeDest",
       "name": "Time to Destination",
       "required": true,
-      "regexList": [ "(?s)Fuel(?<output>\\s+.*?)(?=ATC\\s+Route)", "{{flightTo}}:\\s*(?<output>(1?[0-9]|2[0-3]):[0-5][0-9])" ]
+      "regexChain": [
+        "(?s)Fuel(?<output>\\s+.*?)(?=ATC\\s+Route)",
+        "{{flightTo}}:\\s*(?<output>(1?[0-9]|2[0-3]):[0-5][0-9])"
+      ]
     }
   ]
 }
