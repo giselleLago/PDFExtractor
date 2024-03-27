@@ -1,8 +1,6 @@
 ﻿using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
-using Newtonsoft.Json;
 using PDFExtractors.Models;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace PDFExtractors.Extractor
 {
@@ -12,6 +10,7 @@ namespace PDFExtractors.Extractor
         {
             RegexConfig = regexConfig;
         }
+
         public List<string> GetRelevantPages(string filePath)
         {
             var relevantPages = new List<string>();
@@ -31,8 +30,8 @@ namespace PDFExtractors.Extractor
 
         private bool IsPageRelevant(string pageContent)
         {
-            foreach (var element in RegexConfig.RelevantPagesSearchCriteria) 
-            { 
+            foreach (var element in RegexConfig.RelevantPagesSearchCriteria)
+            {
                 if (!pageContent.Contains(element))
                 {
                     return false;
