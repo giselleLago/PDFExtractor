@@ -8,6 +8,10 @@ namespace PDFExtractors.Extractor
 {
     public class PDFReader : IPDFReader
     {
+        public PDFReader(RegexConfig regexConfig)
+        {
+            RegexConfig = regexConfig;
+        }
         public List<string> GetRelevantPages(string filePath)
         {
             var relevantPages = new List<string>();
@@ -25,16 +29,9 @@ namespace PDFExtractors.Extractor
             return relevantPages;
         }
 
-        private static bool IsPageRelevant(string pageContent)
+        private bool IsPageRelevant(string pageContent)
         {
-            string json = File.ReadAllText(DataSearchCriteriaPath);
-            var searchCriteria = JsonConvert.DeserializeObject<SearchCriteria>(json);
-            if (searchCriteria == null)
-            {
-                throw new Exception("Unable to read data search criteria file.");
-            }
-
-            foreach (var element in searchCriteria.Elements) 
+            foreach (var element in RegexConfig.RelevantPagesSearchCriteria) 
             { 
                 if (!pageContent.Contains(element))
                 {
@@ -45,6 +42,6 @@ namespace PDFExtractors.Extractor
             return true;
         }
 
-        private const string DataSearchCriteriaPath = ".\\DataSearchCriteriaConfig.json";
+        private readonly RegexConfig RegexConfig;
     }
 }

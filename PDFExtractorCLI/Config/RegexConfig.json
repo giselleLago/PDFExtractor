@@ -1,4 +1,22 @@
 {
+  "relevantPagesSearchCriteria": [
+    "Flight Info",
+    "Times",
+    "Loadmass",
+    "Fuel",
+    "CMD Signature",
+    "Corrections",
+    "ATC Route",
+    "ATIS Departure",
+    "ATIS Destination",
+    "ATC Clearance",
+    "T/O Performance",
+    "Landing Performance",
+    "Date:",
+    "Reg.:",
+    "From:",
+    "To:"
+  ],
   "fields": [
     {
       "id": "date",
