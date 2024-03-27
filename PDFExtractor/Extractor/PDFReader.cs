@@ -1,5 +1,8 @@
 ﻿using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
+using Newtonsoft.Json;
+using PDFExtractors.Models;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace PDFExtractors.Extractor
 {
@@ -13,7 +16,7 @@ namespace PDFExtractors.Extractor
             for (int pageNumber = 1; pageNumber <= reader.NumberOfPages; pageNumber++)
             {
                 string pageContent = PdfTextExtractor.GetTextFromPage(reader, pageNumber);
-                if (IsPageRelevant(reader, pageContent))
+                if (IsPageRelevant(pageContent))
                 {
                     relevantPages.Add(pageContent);
                 }
@@ -22,25 +25,26 @@ namespace PDFExtractors.Extractor
             return relevantPages;
         }
 
-        private static bool IsPageRelevant(PdfReader reader, string pageContent)
+        private static bool IsPageRelevant(string pageContent)
         {
-            return (pageContent.Contains("Flight Info") &&
-                    pageContent.Contains("Times") &&
-                    pageContent.Contains("Loadmass") &&
-                    pageContent.Contains("Fuel") &&
-                    pageContent.Contains("CMD Signature") &&
-                    pageContent.Contains("Corrections") &&
-                    pageContent.Contains("ATC Route") &&
-                    pageContent.Contains("ATIS Departure") &&
-                    pageContent.Contains("ATIS Destination") &&
-                    pageContent.Contains("ATC Clearance") &&
-                    pageContent.Contains("T/O Performance") &&
-                    pageContent.Contains("Landing Performance") &&
+            string json = File.ReadAllText(DataSearchCriteriaPath);
+            var searchCriteria = JsonConvert.DeserializeObject<SearchCriteria>(json);
+            if (searchCriteria == null)
+            {
+                throw new Exception("Unable to read data search criteria file.");
+            }
 
-                    pageContent.Contains("Date:") &&
-                    pageContent.Contains("Reg.:") &&
-                    pageContent.Contains("From:") &&
-                    pageContent.Contains("To:")) ;
+            foreach (var element in searchCriteria.Elements) 
+            { 
+                if (!pageContent.Contains(element))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
+
+        private const string DataSearchCriteriaPath = ".\\DataSearchCriteriaConfig.json";
     }
 }
